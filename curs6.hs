@@ -4,6 +4,7 @@ import Data.Char
 import Data.Foldable
 import GHC.Maybe
 
+
 data Bool = False | True
 
 -- not :: Bool -> Bool
@@ -67,9 +68,9 @@ data Nat = Zero | Succ Nat
 x ^^^ Zero = 1.0
 x ^^^ (Succ n) = x * (x ^^^ n)
 
--- (^^) :: Float -> Int -> Float
--- x ^^ 0 = 1.0
--- x ^^ n = x * (x ^^ (n - 1))
+(^^^^) :: Float -> Int -> Float
+x ^^^^ 0 = 1.0
+x ^^^^ n = x * (x ^^^^ (n - 1))
 
 data Maybee a = Nothingg | Justt a
 
@@ -77,29 +78,89 @@ divide :: Int -> Int -> Maybee Int
 divide n 0 = Nothingg
 divide n m = Justt (div n m)
 
--- data Person = Person FirstName LastName Age Height Phone
+type FirstName = String
+type LastName = String
+type Age = Int
+type Height = Float
+type Phone = String
 
--- firstName :: Person -> String
--- firstName (Person firstname _ _ _ _) = firstname
+data Person = Person FirstName LastName Age Height Phone
 
--- lastName :: Person -> String
--- lastName (Person _ lastname _ _ _ _) = lastname
+firstName :: Person -> String
+firstName (Person firstname _ _ _ _) = firstname
 
--- age :: Person -> Int
--- age (Person _ _ age _ _) = age
+lastName :: Person -> String
+lastName (Person _ lastname _ _ _) = lastname
 
--- height :: Person -> Float
--- height (Person _ _ _ height _) = height
+age :: Person -> Int
+age (Person _ _ age _ _) = age
 
--- phoneNumber :: Person -> String
--- phoneNumber (Person _ _ _ _ number) = number
+height :: Person -> Float
+height (Person _ _ _ height _) = height
 
-data Person = Person {
-    firstName :: String,
-    lastName :: String,
-    age :: Int,
-    height :: Float,
-    phoneNumber :: String
-}
+phoneNumber :: Person -> String
+phoneNumber (Person _ _ _ _ number) = number
 
-nextYear person = person { age = age person + 1}
+-- data Person = Person {
+--     firstName :: String,
+--     lastName :: String,
+--     age :: Int,
+--     height :: Float,
+--     phoneNumber :: String
+-- }
+
+-- nextYear person = person { age = age person + 1}
+
+
+--LAB
+
+--1
+rotate :: Int -> [Char] -> [Char]
+rotate n (h:t) 
+    | n > 0 && n < (length (h:t)) = rotate (n-1) (t ++ (h : []))
+    | n < 0 || n > (length (h:t)) = error "n < 0 sau n > lung listei"
+    | otherwise = (h:t)
+
+--2
+-- prop_rotate :: Int -> String -> Bool
+-- prop_rotate k str = rotate (l - m) (rotate m str) == str
+--     where l = length str 
+--           m = if l == 0 then 0
+--              else k `mod` l
+
+--3
+makeKey :: Int -> [(Char, Char)]
+makeKey n = [(x, y) | (x, y) <- zip ['A' .. 'Z'] (rotate n ['A' .. 'Z'])]
+
+--4
+lookUp :: Char -> [(Char, Char)] -> [Char]
+lookUp ch lista = ls
+    where ls = [snd (x, y) | (x, y) <- lista, ord ch == ord (fst (x, y))]
+
+--5
+encipher :: Int -> Char -> Char
+encipher n ch 
+    | n > 0 && isAlpha ch = chr(((ord ch + n - ord 'A') `mod` 26) + ord 'A')
+    | otherwise = ch
+
+--6
+normalize :: String -> String
+normalize string = [toUpper(x) | x <- string, isAlphaNum x] 
+
+--7
+encipherStr :: Int -> String -> String 
+encipherStr n string = [encipher n (toUpper(x)) | x <- string, isAlphaNum x]
+
+
+--8
+reverseKey :: [(Char, Char)] -> [(Char, Char)]
+reverseKey lista = [(y, x) | (x, y) <- lista]
+
+--9
+decipher :: Int -> Char -> Char
+decipher n ch
+    | n > 0 && isAlpha ch = chr(((ord ch + ord 'Z' - n) `mod` 26)+ ord 'A' +1)
+    | otherwise = ch
+
+decipherStr :: Int -> String -> String
+decipherStr n string = [decipher n (toUpper(x)) | x <- string, isAlphaNum x]
