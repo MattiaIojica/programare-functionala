@@ -31,4 +31,4 @@ lll =[(i, x) | (i, x) <- [1..] `zip` ['A'..'Z'], even i]
 
 zzz = [(x, y) | x <- [1..4], y <- ['a'..'i']]
 
-natural = [1..]
+natural = [0..]
